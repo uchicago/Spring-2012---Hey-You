@@ -68,14 +68,7 @@
  *******************************************************************************/
 - (void)postNotification
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"mobi.uchicago.date" object:[NSDate date]];
-
-    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    dispatch_async(queue, ^{
-        for (int i=0; i < 10; i++) {
-                     sleep(5);
-        }
-    });
+   
 }
 
 /*******************************************************************************
@@ -89,7 +82,9 @@
     NSDate *dateObject = (NSDate*)[notif object];
 
     // Update UI; needs be on main thread
-    [self performSelectorOnMainThread:@selector(updateLabel:) withObject:[dateObject description] waitUntilDone:YES];
+    //[self performSelectorOnMainThread:@selector(updateLabel:) withObject:[dateObject description] waitUntilDone:YES];
+    self.dateLabel.text = [NSString stringWithFormat:@"Image Downloaded on %@",
+                           [dateObject description]];
 }
 
 /*******************************************************************************
@@ -111,7 +106,7 @@
 - (void)theKeyboardAppeared:(id)sender
 {
     NSLog(@"Keyboard Appeared");
-    self.dateLabel.center = CGPointMake(160,200);
+    self.dateLabel.center = CGPointMake(160,150);
 }
 
 - (void)theKeyboardDisappeared:(id)sender
@@ -197,7 +192,7 @@
         } else {
             // Update the UIImageView image property with the downloaded image
             NSLog(@"Image downloaded ");
-            sleep(10); // Simulate bad internet connection
+            sleep(3); // Simulate bad internet connection
             
             // Convert data to image
             UIImage *image = [UIImage imageWithData:retrievedData];
@@ -206,7 +201,8 @@
             [self.spinner stopAnimating];
             
             // Send Notification that we received the image
-            [self postNotification];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"mobi.uchicago.date" object:[NSDate date]];
+            
         }
     }];
 }
